@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import * as rsvApi from '../api/reservationApi';
 import StudyroomMap from '../components/studyroom/StudyroomMap';
 
 export default function StudyroomPage() {
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [modalType, setModalType] = useState('null');
   const [rooms, setRooms] = useState([
     { roomNo: 1, status: 'AVAILABLE' },
     {
@@ -31,10 +33,18 @@ export default function StudyroomPage() {
 
   const handleRoomClick = (roomNo) => {
     setSelectedRoom(rooms.find((room) => room.roomNo === roomNo));
+    setModalType('INFO');
   };
 
   const handleRoomClose = () => {
     setSelectedRoom(null);
+    setModalType('null');
+  };
+
+  const handleAddReservation = (rsv) => {
+    rsvApi.createReservation(rsv).then((res) => {
+      rooms.push(rsv);
+    });
   };
 
   return (
@@ -43,8 +53,11 @@ export default function StudyroomPage() {
       <StudyroomMap
         rooms={rooms}
         selectedRoom={selectedRoom}
+        modalType={modalType}
+        setModalType={setModalType}
         onRoomClick={handleRoomClick}
         onClose={handleRoomClose}
+        onAddReservation={handleAddReservation}
       />
     </div>
   );

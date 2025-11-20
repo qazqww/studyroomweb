@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import Room from './Room';
 import RoomInfoModal from './RoomInfoModal';
 
 export default function StudyroomMap({
   rooms,
   selectedRoom,
+  modalType,
+  setModalType,
   onRoomClick,
   onClose,
+  onAddReservation,
 }) {
   return (
     <div>
@@ -19,7 +23,15 @@ export default function StudyroomMap({
           />
         ))}
       </div>
-      {selectedRoom && <RoomInfoModal room={selectedRoom} onClose={onClose} />}
+      {selectedRoom && (
+        <RoomInfoModal
+          room={selectedRoom}
+          modalType={modalType}
+          setModalType={setModalType}
+          onClose={onClose}
+          onAddReservation={onAddReservation}
+        />
+      )}
     </div>
   );
 }
