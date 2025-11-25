@@ -1,16 +1,22 @@
 import { useState } from 'react';
-import { LuChevronDown } from 'react-icons/lu';
+import { LuChevronDown, LuCheck } from 'react-icons/lu';
 
 export default function ReservationSubjectSelector({ subjects, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
 
-  const addSubject = (subject) => {
-    if (selectedSubjects.find((s) => s.id === subject.id)) return; // 중복 방지
+  const toggleSubject = (subject) => {
+    const exists = selectedSubjects.find((s) => s.id === subject.id);
 
-    const newList = [...selectedSubjects, subject];
+    let newList;
+    if (exists) {
+      newList = selectedSubjects.filter((s) => s.id !== subject.id);
+    } else {
+      newList = [...selectedSubjects, subject];
+    }
+
     setSelectedSubjects(newList);
-    onChange(newList.map((s) => s.id)); // 부모에게 id 배열 전달
+    onChange(newList.map((s) => s.id));
   };
 
   const removeSubject = (id) => {
@@ -21,7 +27,6 @@ export default function ReservationSubjectSelector({ subjects, onChange }) {
 
   return (
     <div className='space-y-3'>
-      {/* 커스텀 드롭다운 */}
       <div className='relative'>
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -38,21 +43,34 @@ export default function ReservationSubjectSelector({ subjects, onChange }) {
             {subjects.length === 0 ? (
               <div className='p-3 text-sm text-gray-500'>과목이 없습니다.</div>
             ) : (
-              subjects.map((subject) => (
-                <button
-                  key={subject.id}
-                  onClick={() => addSubject(subject)}
-                  className='w-full text-left px-3 py-2 hover:bg-gray-100'
-                >
-                  {subject.name}
-                </button>
-              ))
+              subjects.map((subject) => {
+                const isSelected = selectedSubjects.some(
+                  (s) => s.id === subject.id
+                );
+
+                return (
+                  <button
+                    key={subject.id}
+                    onClick={() => toggleSubject(subject)}
+                    className='w-full flex items-center justify-between px-3 py-2 hover:bg-gray-100'
+                  >
+                    <span>{subject.name}</span>
+
+                    <span
+                      className={`border rounded w-5 h-5 flex items-center justify-center ${
+                        isSelected ? 'bg-blue-500 border-blue-500' : 'bg-white'
+                      }`}
+                    >
+                      {isSelected && <LuCheck className='w-4 h-4 text-white' />}
+                    </span>
+                  </button>
+                );
+              })
             )}
           </div>
         )}
       </div>
 
-      {/* 선택된 과목 태그들 */}
       <div className='flex flex-wrap gap-2'>
         {selectedSubjects.map((subject) => (
           <div
@@ -61,10 +79,9 @@ export default function ReservationSubjectSelector({ subjects, onChange }) {
           >
             {subject.name}
 
-            {/* Hover 시 나오는 삭제 버튼 */}
             <button
               onClick={() => removeSubject(subject.id)}
-              className='absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs hidden group-hover:flex items-center justify-center'
+              className='absolute -top-2 -right-3 text-black rounded-full w-0.5 h-1 text-xs hidden group-hover:flex items-center justify-center'
             >
               ✕
             </button>

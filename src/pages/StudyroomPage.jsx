@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import * as rsvApi from '../api/reservationApi';
 import StudyroomMap from '../components/studyroom/StudyroomMap';
+import ReservationSubjectSelector from '../components/studyroom/ReservationSubjectSelector';
 
 export default function StudyroomPage() {
   const [selectedRoom, setSelectedRoom] = useState(null);

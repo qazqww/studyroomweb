@@ -6,11 +6,9 @@ export default function ReserveModalContent({
   setModalType,
   onAddReservation,
 }) {
-  const [reservation, setReservation] = useState([]);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [selectedSubjects, setSelectedSubjects] = useState([]);
-  const [subjectId, setSubjectId] = useState('');
 
   const dummySubjects = [
     { id: 1, name: '수학' },
@@ -41,25 +39,14 @@ export default function ReserveModalContent({
         />
       </div>
 
-      {/* SUBJECT SELECT */}
       <div className='flex flex-col'>
         <label className='text-sm font-medium'>공부 과목 선택</label>
-        <select
-          value={subjectId}
-          onChange={(e) => setSubjectId(e.target.value)}
-          className='border rounded p-2'
-        >
-          <ReservationSubjectSelector
-            subjects={dummySubjects}
-            onChange={() => {}}
-          />
-          {/* <option value=''>과목 선택</option>
-          {dummySubjects.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))} */}
-        </select>
+        <ReservationSubjectSelector
+          subjects={dummySubjects}
+          onChange={(e) => {
+            setSelectedSubjects(e.target.value);
+          }}
+        />
       </div>
 
       <div className='flex justify-end gap-3 mt-6'>
@@ -70,9 +57,15 @@ export default function ReserveModalContent({
           뒤로
         </button>
 
-        {/* SUBMIT BUTTON */}
         <button
-          onClick={onAddReservation}
+          onClick={() =>
+            onAddReservation({
+              roomNo: room.roomNo,
+              startTime,
+              endTime,
+              reservationSubjects: selectedSubjects,
+            })
+          }
           className='px-4 py-2 rounded-lg transition'
         >
           예약
